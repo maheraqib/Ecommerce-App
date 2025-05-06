@@ -32,7 +32,8 @@ const HomeStack = () => {
   return(
     <Stack.Navigator screenOptions={{
       headerShown: false,
-    }}>
+    }} 
+    >
       <Stack.Screen name = "HOME" component = {HomeScreen}/>
       <Stack.Screen name = "PRODUCT-DETAILS" component = {ProductDetail}/>
     </Stack.Navigator>

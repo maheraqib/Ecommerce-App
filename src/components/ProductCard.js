@@ -10,7 +10,7 @@ const ProductCard = ({ item, onLikeToggle }) => {
   const navigation = useNavigation();
   return (
     <TouchableOpacity onPress={() => {
-      navigation.navigate("PRODUCT-DETAILS")
+      navigation.navigate("PRODUCT-DETAILS", {item})
     }} style = {styles.container}>
         <Image source = {item.image} style = {styles.cover}/>
         <View style = {styles.contant}>
