@@ -1,21 +1,30 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Header from '../Header'
-import { ScrollView } from "react-native";
 import { TouchableOpacity } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { ScrollView } from 'react-native';
+import { CartContext } from '../../context/cardContext';
 
 const sizes = ['S', 'M', 'L', 'XL']; 
 const colors = ['#91A1B0', '#B11D1DD4', '#1F44A3C2', '#9F632AD4', '#1D752BDB', '#000000C9'];
 const ProductDetail = () => {
+  const navigation = useNavigation();   
   const route = useRoute();
   const item = route.params.item;
   
-  
+  const {addToCart} = useContext(CartContext);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
+
+  const handleAddToCart = (item) => {
+    item.size = selectedSize;
+    item.color = selectedColor;
+    addToCart(item);
+    navigation.navigate("Cart")
+  }
   return (
-    <ScrollView colors={["#FDF0F3", "#FFFBFC"]} style={styles.container}>
+    <ScrollView colors={["#FDF0F3", "#FFFBFC"]} style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
       <Header />
       </View>
@@ -59,7 +68,9 @@ const ProductDetail = () => {
       
      
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={()=> {
+          handleAddToCart(item);
+        }}>
 
           <Text style={styles.buttonText}> Add to Cart </Text>
 
