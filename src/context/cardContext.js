@@ -16,37 +16,71 @@ export const CartProvider = ({children}) => {
     };
 
     const addToCart = async (item) => {
-        const itemExist = carts.findIndex((cart) => cart.id === item.id);
-        if (itemExist === -1) {
-            const newCartItem = [...carts, item];
-            await AsyncStorage.setItem("carts", JSON.stringify(newCartItem))
-            setCarts( newCartItem );
-            totalSum(newCartItem);
+        const itemIndex = carts.findIndex((cart) => cart.id === item.id);
+        let newCartItem = [];
+      
+        if (itemIndex === -1) {
+          // First time adding
+          newCartItem = [...carts, { ...item, quantity: 1 }];
+        } else {
+          newCartItem = carts.map((cart, index) =>
+            index === itemIndex
+              ? { ...cart, quantity: cart.quantity + 1 }
+              : cart
+          );
         }
-    };
-    console.log(carts);
-    
-
-    const deleteItemFromCart = async(item) => {
-        const newItems = carts.filter((cart)=> cart.id !== item.id);
-        await AsyncStorage.setItem("carts",JSON.stringify (newItems));
+      
+        await AsyncStorage.setItem("carts", JSON.stringify(newCartItem));
+        setCarts(newCartItem);
+        totalSum(newCartItem);
+      };
+      
+      
+      const deleteItemFromCart = async (item) => {
+        const newItems = carts.filter((cart) => cart.id !== item.id);
+        await AsyncStorage.setItem("carts", JSON.stringify(newItems));
         setCarts(newItems);
-        totalSum(newItems);
-    } 
+        totalSum(newItems); // Use newItems
+      };
+      
 
-    const totalSum = () => {
-        const totalSum = carts.reduce((amount, item)=> amount + item.price, 0);
-        console.log("totalSum", totalSum);
-        setTotalPrice(totalSum);
-        
-    };
+      const totalSum = (cartItems) => {
+        const total = cartItems.reduce((amount, item) => {
+          return amount + parseFloat(item.price) * (item.quantity || 1);
+        }, 0);
+        setTotalPrice(total);
+      };
+      
+      const increaseQuantity = async (item) => {
+        const newCart = carts.map((cart) =>
+          cart.id === item.id
+            ? { ...cart, quantity: cart.quantity + 1 }
+            : cart
+        );
+        await AsyncStorage.setItem("carts", JSON.stringify(newCart));
+        setCarts(newCart);
+        totalSum(newCart);
+      };
+      
+      const decreaseQuantity = async (item) => {
+        let newCart = carts.map((cart) =>
+          cart.id === item.id
+            ? { ...cart, quantity: cart.quantity > 1 ? cart.quantity - 1 : 1 }
+            : cart
+        );
+        await AsyncStorage.setItem("carts", JSON.stringify(newCart));
+        setCarts(newCart);
+        totalSum(newCart);
+      };
+      
 
     const value = {
         carts,
         addToCart,
         totalPrice,
         deleteItemFromCart,
-         
+        increaseQuantity,
+        decreaseQuantity,
     };
     return (<CartContext.Provider value={value}>{children}</CartContext.Provider>)
 }

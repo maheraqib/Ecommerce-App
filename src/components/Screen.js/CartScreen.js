@@ -7,7 +7,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { CartContext } from "../../context/cardContext";
 
 const CartScreen = () => {
-    const {carts, totalPrice, deleteItemFromCart} = useContext(CartContext);
+    const {carts, totalPrice, deleteItemFromCart, increaseQuantity, decreaseQuantity} = useContext(CartContext);
   return (
     <LinearGradient colors={["#FDF0F3", "#FFFBFC"]} style={styles.container}>
       <View style={styles.header}>
@@ -16,14 +16,16 @@ const CartScreen = () => {
       <FlatList
         data={carts}
         ListHeaderComponent={<></>}
-        renderItem={({item})  => <CartCard item={item} deleteFromCart = {deleteItemFromCart}/>}
+        renderItem={({item})  => <CartCard item={item} deleteFromCart = {deleteItemFromCart}
+        increaseQuantity={increaseQuantity} decreaseQuantity={decreaseQuantity}
+        />}
         ListFooterComponent={
           <>
             <View style={styles.totalShippingContainer}>
               <View style={styles.totalPrice}>
                 <Text style={styles.text}> Total:</Text>
-                <Text style={styles.text}> {totalPrice} </Text>
-              </View>
+                <Text style={styles.text}> ${totalPrice.toFixed(2)} </Text>
+                </View>
               <View style={styles.totalPrice}>
                 <Text style={styles.text}> Shipping:</Text>
                 <Text style={styles.text}> $0.0</Text>
@@ -32,11 +34,7 @@ const CartScreen = () => {
             <View style={styles.divider} />
             <View style={styles.totalPrice}>
               <Text style={styles.text}>Grand Total:</Text>
-              <Text
-                style={[styles.text, { color: "#3C3C3C", fontWeight: 600 }]}
-              >
-                {totalPrice}
-              </Text>
+              <Text style={styles.text}> ${totalPrice.toFixed(2)} </Text>
             </View>
             <TouchableOpacity style={styles.button}>
               <Text style={styles.buttonText}> Checkout </Text>

@@ -16,7 +16,7 @@ const ProductCard = ({ item, onLikeToggle }) => {
         <View style = {styles.contant}>
 
         <Text style={styles.title}> {item.title} </Text>
-        <Text style= {styles.price}> {item.price} </Text>
+        <Text style= {styles.price}> ${item.price} </Text>
         </View>
 
         <TouchableOpacity onPress={onLikeToggle} style={styles.heartIcon}>
